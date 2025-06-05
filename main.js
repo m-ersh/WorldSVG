@@ -64,3 +64,6 @@ window.onload = function () {
         }
     });
 }
+
+// To do list 
+// Button to change to a specific continent or country
