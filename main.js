@@ -4,6 +4,7 @@ window.onload = function () {
 
     let selectedPath = null;
     let correctPath = null;
+    let lastClickedPath = null;
 
     svg.querySelectorAll('path').forEach(path => {
         const origColor =  window.getComputedStyle(path).fill;
@@ -40,6 +41,15 @@ window.onload = function () {
     svg.addEventListener('click', function(event) {
         console.log("SVG clicked", event.target);
 
+        if (totalGuesses >= maxGuesses) {
+            return;
+        }
+
+        if (lastClickedPath && lastClickedPath.getAttribute('title') !== display.textContent) {
+            const origColor = lastClickedPath.dataset.origColor || "none";
+            lastClickedPath.style.fill = origColor;
+        }
+
         if (event.target.tagName.toLowerCase() === 'path') {
             const path = event.target;
             const currentColor = window.getComputedStyle(path).fill;
@@ -55,12 +65,14 @@ window.onload = function () {
             } 
             
             totalGuesses++;
+            lastClickedPath = path;
 
-            if (totalGuesses < maxGuesses) {
-                loadNextCountry();
-            } else {
-                alert(`Game over! You got ${correctGuesses} out of ${maxGuesses} correct.`)
+            if (totalGuesses === maxGuesses) {
+                alert(`Game over! You got ${correctGuesses} out of ${maxGuesses} correct.`);
+                return;
             }
+            
+            loadNextCountry();
         }
     });
 }
