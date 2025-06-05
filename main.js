@@ -23,15 +23,19 @@ window.onload = function () {
         svg.parentNode.insertBefore(display, svg);
     }
 
-    if (paths.length) {
-        const randomIndex = Math.floor(Math.random() * paths.length);
-        const randomPath = paths[randomIndex];
-        correctPath = randomPath;
-        display.textContent = paths[randomIndex].getAttribute('title');
-    }
-
     let correctGuesses = 0;
     let totalGuesses = 0;
+    const maxGuesses = 5;
+
+    function loadNextCountry() {
+        const randomIndex = Math.floor(Math.random() * paths.length);
+        correctPath = paths[randomIndex];
+        display.textContent = correctPath.getAttribute('title');
+    }
+
+    if (paths.length) {
+        loadNextCountry();
+    }
 
     svg.addEventListener('click', function(event) {
         console.log("SVG clicked", event.target);
@@ -45,14 +49,18 @@ window.onload = function () {
                 display.innerHTML +=  "<br>Correct!";
                 path.style.fill = 'green';
                 correctGuesses++;
-                totalGuesses++;
             } else {
                 display.innerHTML += "<br>Incorrect.";
+                path.style.fill = 'red';
             } 
             
             totalGuesses++;
 
-            path.style.fill = 'blue';
+            if (totalGuesses < maxGuesses) {
+                loadNextCountry();
+            } else {
+                alert(`Game over! You got ${correctGuesses} out of ${maxGuesses} correct.`)
+            }
         }
     });
 }
